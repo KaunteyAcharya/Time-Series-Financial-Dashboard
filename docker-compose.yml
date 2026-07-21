@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: timeseries_pg
+    environment:
+      POSTGRES_DB: timeseries
+      POSTGRES_USER: ts_user
+      POSTGRES_PASSWORD: ts_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/schema:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ts_user -d timeseries"]
+      interval: 5s
+      retries: 5
+
+volumes:
+  pgdata:
